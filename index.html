@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab. de Ciências · Agendamento</title>
+    
+    <!-- Bootstrap 5 + ícones -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    <!-- Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    
+    <!-- CSS personalizado -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Cabeçalho -->
+        <div class="card-lab p-0 overflow-hidden mb-4">
+            <div class="header-gradient d-flex flex-wrap align-items-center justify-content-between">
+                <div>
+                    <h1 class="display-6 fw-bold mb-1"><i class="bi bi-flask me-2"></i>Lab. de Ciências</h1>
+                </div>
+                <div class="mt-2 mt-md-0 d-flex flex-wrap gap-2">
+                    <button class="btn btn-lab-warning" data-bs-toggle="modal" data-bs-target="#checklistFotoModal">
+                        <i class="bi bi-camera me-1"></i> Checklist Fotos
+                    </button>
+                    <button class="btn btn-lab-danger" data-bs-toggle="modal" data-bs-target="#registrarQuebraModal">
+                        <i class="bi bi-exclamation-diamond me-1"></i> Registrar Quebra
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navegação de Semanas -->
+        <div class="semana-nav">
+            <button class="btn-nav" id="btnSemanaAnterior" title="Semana anterior">
+                <i class="bi bi-chevron-left"></i>
+            </button>
+            <div class="semana-info" id="semanaInfo">Semana atual</div>
+            <button class="btn-nav" id="btnProximaSemana" title="Próxima semana">
+                <i class="bi bi-chevron-right"></i>
+            </button>
+            <button class="btn-hoje" id="btnHoje">Hoje</button>
+        </div>
+
+        <!-- Abas dos Dias da Semana -->
+        <div class="dias-tabs" id="diasTabs">
+            <!-- Preenchido via JS -->
+        </div>
+
+        <!-- Conteúdo do dia selecionado -->
+        <div class="card-lab p-3 p-lg-4 mb-4">
+            <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+                <h4 class="fw-bold mb-0" style="color: #0b2b3f;">
+                    <i class="bi bi-calendar-week me-2"></i><span id="tituloDiaSelecionado">Segunda-feira</span>
+                </h4>
+                <div class="d-flex align-items-center gap-2">
+                    <span class="info-badge" id="badgeDataCompleta">
+                        <i class="bi bi-calendar3"></i> <span id="dataCompleta">01/01/2024</span>
+                    </span>
+                    <span class="info-badge" id="badgeTotalAgendamentos">
+                        <i class="bi bi-people"></i> 0 agendamentos
+                    </span>
+                </div>
+            </div>
+
+            <!-- Grade de Horários -->
+            <div class="horarios-grid" id="horariosGrid">
+                <!-- Preenchido via JS -->
+            </div>
+
+            <div class="footer-note d-flex justify-content-between align-items-center mt-3">
+                <span><i class="bi bi-info-circle me-1"></i> Clique em um horário livre para agendar</span>
+                <span><i class="bi bi-pencil me-1"></i> Clique em um horário ocupado para editar/cancelar</span>
+            </div>
+        </div>
+
+        <!-- Modal Checklist Fotos -->
+        <div class="modal fade" id="checklistFotoModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content border-0 shadow-lg" style="border-radius: 28px;">
+                    <div class="modal-header border-0" style="background: #fdf4e3; border-radius: 28px 28px 0 0;">
+                        <h5 class="modal-title fw-bold"><i class="bi bi-camera-fill me-2"></i>Checklist Fotográfico</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="formChecklistFotos">
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Tipo de registro</label>
+                                <select class="form-select" id="tipoChecklist" required>
+                                    <option value="">Selecione...</option>
+                                    <option value="inicio">Início da aula</option>
+                                    <option value="final">Final da aula</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">
+                                    <i class="bi bi-images me-1"></i> Selecione as fotos (quantas desejar)
+                                </label>
+                                <input class="form-control" type="file" id="inputFotos" accept="image/*" multiple required>
+                                <small class="text-muted">Escolha ao menos 1 foto.</small>
+                            </div>
+                            <div id="previewContainer" class="d-flex flex-wrap gap-2 mb-3"></div>
+                        </form>
+                    </div>
+                    <div class="modal-footer border-0">
+                        <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button class="btn btn-lab-warning" id="salvarChecklistBtn"><i class="bi bi-upload me-1"></i> Salvar checklist</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Registrar Quebra -->
+        <div class="modal fade" id="registrarQuebraModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content border-0 shadow-lg" style="border-radius: 28px;">
+                    <div class="modal-header border-0" style="background: #fde8e0; border-radius: 28px 28px 0 0;">
+                        <h5 class="modal-title fw-bold"><i class="bi bi-exclamation-diamond-fill me-2"></i>Registrar Quebra de Material</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="formQuebra">
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold"><i class="bi bi-box me-1"></i> Material avariado</label>
+                                <select class="form-select" id="materialQuebraSelect" required>
+                                    <option value="">Selecione...</option>
+                                    <option value="Microscópio">Microscópio</option>
+                                    <option value="Multímetro">Multímetro</option>
+                                    <option value="Osciloscópio">Osciloscópio</option>
+                                    <option value="Gerador de sinais">Gerador de sinais</option>
+                                    <option value="Fonte de alimentação">Fonte de alimentação</option>
+                                    <option value="Kit eletrônica">Kit eletrônica</option>
+                                    <option value="Tubo de ensaio">Tubo de ensaio</option>
+                                    <option value="Béquer">Béquer</option>
+                                    <option value="Proveta">Proveta</option>
+                                    <option value="Lâmina de vidro">Lâmina de vidro</option>
+                                    <option value="Termômetro">Termômetro</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold"><i class="bi bi-pencil me-1"></i> Descrição do problema</label>
+                                <textarea class="form-control" id="descricaoQuebra" rows="3" placeholder="Descreva o que aconteceu..." required></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold"><i class="bi bi-person me-1"></i> Relatado por</label>
+                                <input type="text" class="form-control" id="relatadoPorInput" placeholder="Nome do professor" required>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer border-0">
+                        <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button class="btn btn-lab-danger" id="salvarQuebraBtn"><i class="bi bi-save me-1"></i> Salvar registro</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Agendamento -->
+        <div class="modal fade" id="agendamentoModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content border-0 shadow-lg" style="border-radius: 28px;">
+                    <div class="modal-header border-0" style="background: #e2eef8; border-radius: 28px 28px 0 0;">
+                        <h5 class="modal-title fw-bold" id="agendamentoModalTitulo">
+                            <i class="bi bi-calendar-plus me-2"></i>Novo Agendamento
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="modal-agendamento-body">
+                            <!-- Formulário -->
+                            <div class="modal-agendamento-form">
+                                <form id="formAgendamento">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold"><i class="bi bi-person me-1"></i> Professor Responsável</label>
+                                        <input type="text" class="form-control" id="responsavelInput" placeholder="Nome do professor" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold"><i class="bi bi-journal-text me-1"></i> Matéria / Disciplina</label>
+                                        <input type="text" class="form-control" id="materiaInput" placeholder="Ex: Biologia, Química, Física..." required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold"><i class="bi bi-people me-1"></i> Turma</label>
+                                        <input type="text" class="form-control" id="turmaInput" placeholder="Ex: 1º Ano A, 2º Ano B..." required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold"><i class="bi bi-clock me-1"></i> Horário</label>
+                                        <input type="text" class="form-control" id="horarioInput" readonly>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold"><i class="bi bi-calendar-range me-1"></i> Data</label>
+                                        <input type="date" class="form-control" id="dataInput" required>
+                                    </div>
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="checkbox" id="checklistCheck" checked>
+                                        <label class="form-check-label" for="checklistCheck">
+                                            <i class="bi bi-check2-square me-1"></i> Checklist de segurança confirmado
+                                        </label>
+                                    </div>
+                                </form>
+                            </div>
+                            <!-- Lista de Materiais -->
+                            <div class="modal-agendamento-materiais">
+                                <div class="titulo-materiais">
+                                    <i class="bi bi-box-seam"></i> Materiais do Laboratório
+                                </div>
+                                <div class="materiais-lista" id="materiaisLista">
+                                    <!-- Preenchido via JS -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-0" style="border-radius: 0 0 28px 28px;">
+                        <button class="btn btn-danger me-auto" id="cancelarAgendamentoBtn" style="display:none;">
+                            <i class="bi bi-trash me-1"></i> Cancelar Agendamento
+                        </button>
+                        <button class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                        <button class="btn btn-lab-primary" id="salvarAgendamentoBtn"><i class="bi bi-save me-1"></i> Salvar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- JavaScript personalizado -->
+    <script src="script.js"></script>
+</body>
+</html>
